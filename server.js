@@ -1,8 +1,28 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const app = express();
 const PORT = 3000;
+
+// Conexión a MongoDB Atlas
+const mongoURI = process.env.MONGO_URI;
+mongoose.connect(mongoURI)
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log('MongoDB connection error:', err));
+
+// Definición del esquema y modelo de usuario
+const userSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+
+const User = mongoose.model('User', userSchema);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,9 +48,22 @@ app.post('/login', (req, res) => {
     res.send('Inicio de sesión exitoso');
 });
 
-app.post('/register', (req, res) => {
-    // Aquí puedes manejar la lógica de registro
-    res.send('Registro exitoso');
+app.post('/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    try {
+        // Verificar si el usuario ya existe
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send('El usuario ya existe');
+        }
+
+        // Crear un nuevo usuario
+        const newUser = new User({ name, email, password });
+        await newUser.save();
+        res.send('Registro exitoso');
+    } catch (err) {
+        res.status(500).send('Error en el registro');
+    }
 });
 
 app.listen(PORT, () => {

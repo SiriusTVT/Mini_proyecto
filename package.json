@@ -6,7 +6,9 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "dotenv": "^16.4.7",
+    "express": "^4.17.1",
+    "mongoose": "^8.10.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
