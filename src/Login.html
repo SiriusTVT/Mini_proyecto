@@ -15,7 +15,7 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
-        <form action="/login" method="POST" class="space-y-6">
+        <form id="loginForm" class="space-y-6">
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
                 <div class="mt-1 relative rounded-md shadow-sm">
@@ -46,10 +46,40 @@
             <div>
                 <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Iniciar Sesión</button>
             </div>
+            <div id="error-message" class="text-red-500 text-sm mt-4 hidden">Usuario no encontrado o contraseña incorrecta</div>
         </form>
         <p class="mt-6 text-center text-sm text-gray-600">
             ¿No tienes una cuenta? <a href="/register" class="font-medium text-indigo-600 hover:text-indigo-500">Regístrate</a>
         </p>
     </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    document.getElementById('error-message').classList.remove('hidden');
+                } else {
+                    document.getElementById('error-message').classList.add('hidden');
+                    alert('Inicio de sesión exitoso');
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Error en el inicio de sesión';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -26,6 +26,7 @@ const User = mongoose.model('User', userSchema);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.redirect('/Main.html');
@@ -43,9 +44,17 @@ app.get('/Main.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/Main.html'));
 });
 
-app.post('/login', (req, res) => {
-    // Aquí puedes manejar la lógica de inicio de sesión
-    res.send('Inicio de sesión exitoso');
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user || user.password !== password) {
+            return res.status(400).send('Usuario no encontrado o contraseña incorrecta');
+        }
+        res.send('Inicio de sesión exitoso');
+    } catch (err) {
+        res.status(500).send('Error en el inicio de sesión');
+    }
 });
 
 app.post('/register', async (req, res) => {
