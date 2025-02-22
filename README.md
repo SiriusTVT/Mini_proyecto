@@ -4,4 +4,4 @@
 
 - Ruta de BD:
 
-en el archivo .env
+  en el archivo .env
