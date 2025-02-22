@@ -2,6 +2,6 @@
 
 npm start
 
-- Ruta de BBD:
+- Ruta de BD:
 
 en el archivo .env
