@@ -1,6 +1,6 @@
 - Para Arrancar el servicio:
-
-npm start
+1. npm install --instalar paquetes
+2. npm start --servicio node
 
 - Ruta de BD:
 
