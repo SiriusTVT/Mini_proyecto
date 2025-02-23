@@ -77,13 +77,16 @@
                     
                                 products.forEach(product => {
                                     const productElement = document.createElement("div");
-                                    productElement.className = "product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300";
+                                    productElement.className = "product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer";
                                     productElement.setAttribute("data-category", product.category);
+                                    productElement.setAttribute("onclick", `window.location.href='/ConsultaProducto.html?id=${product._id}'`); // Redirigir al hacer clic
                                     productElement.innerHTML = `
                                         <img class="w-full h-40 object-cover mb-2 rounded" src="${product.imageUrl}" alt="${product.name}">
                                         <h3 class="text-lg font-semibold text-gray-800">${product.name}</h3>
                                         <p class="text-gray-600">Categoría: ${product.category}</p>
                                         <p class="text-gray-800 font-bold">$${product.price}</p>
+                                        <p class="text-gray-600">Stock: ${product.stock}</p>
+                                        <p class="${product.stock > 0 ? 'text-green-600' : 'text-red-600'}">${product.stock > 0 ? 'Disponible' : 'Agotado'}</p> <!-- Mostrar disponibilidad -->
                                     `;
                                     container.appendChild(productElement);
                                 });

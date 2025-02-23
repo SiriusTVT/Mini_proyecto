@@ -65,12 +65,31 @@ app.get("/GestionProductos.html", (req, res) => {
     res.sendFile(path.join(__dirname, "src/GestionProductos.html"));
 });
 
+app.get("/ConsultaProducto.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "src/ConsultaProducto.html"));
+});
+
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find();
         res.json(products);
     } catch (err) {
         res.status(500).send("Error al obtener los productos");
+    }
+});
+
+app.get('/products/:id', async (req, res) => {
+    console.log(`Received request for product ID: ${req.params.id}`); // Registro de depuración
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            console.log("Producto no encontrado"); // Registro de depuración
+            return res.status(404).send("Producto no encontrado");
+        }
+        res.json(product);
+    } catch (err) {
+        console.error("Error al obtener el producto:", err); // Registro de depuración
+        res.status(500).send("Error al obtener el producto");
     }
 });
 

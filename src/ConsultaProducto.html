@@ -1,0 +1,67 @@
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Consulta de Producto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+    <script>
+        async function loadProductDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const errorMessage = document.getElementById('error-message');
+            console.log(`Product ID from URL: ${productId}`); // Registro de depuración
+            if (!productId) {
+                errorMessage.innerText = "ID de producto no definido";
+                errorMessage.classList.remove('hidden');
+                console.error("ID de producto no definido"); // Registro de depuración
+                return;
+            }
+            try {
+                console.log(`Fetching details for product ID: ${productId}`); // Registro de depuración
+                const response = await fetch(`/products/${productId}`); // Llama a la API para obtener detalles del producto
+                if (!response.ok) {
+                    throw new Error("Error al obtener el producto");
+                }
+                const product = await response.json();
+                console.log("Product details:", product); // Registro de depuración
+                document.getElementById('product-name').innerText = product.name;
+                document.getElementById('product-image').src = product.imageUrl;
+                document.getElementById('product-category').innerText = product.category;
+                document.getElementById('product-price').innerText = `$${product.price}`;
+                document.getElementById('product-description').innerText = product.description; // Mostrar descripción
+                document.getElementById('product-stock').innerText = product.stock > 0 ? 'Disponible' : 'Agotado';
+                document.getElementById('product-stock').className = product.stock > 0 ? 'text-green-600' : 'text-red-600';
+            } catch (error) {
+                errorMessage.innerText = "Error al cargar los detalles del producto";
+                errorMessage.classList.remove('hidden');
+                console.error("Error al cargar los detalles del producto:", error); // Registro de depuración
+            }
+        }
+
+        window.onload = loadProductDetails; // Llama a la función cuando se cargue la página
+    </script>
+</head>
+<body class="font-roboto bg-gray-100">
+    <div class="container mx-auto p-4">
+        <nav class="bg-white p-4 rounded-lg shadow mb-4">
+            <ul class="flex justify-between items-center">
+                <li>
+                    <a href="/GestionProductos.html" class="text-blue-600 text-xl font-bold">Volver</a>
+                </li>
+            </ul>
+        </nav>
+        <h1 class="text-3xl font-bold mb-4 text-center text-blue-600">Consulta de Producto</h1>
+        <div id="error-message" class="hidden text-red-600 text-center mb-4"></div>
+        <div class="bg-white p-4 rounded-lg shadow">
+            <img id="product-image" class="w-full h-64 object-cover mb-4 rounded" src="" alt="Producto">
+            <h2 id="product-name" class="text-2xl font-semibold text-gray-800 mb-2"></h2>
+            <p id="product-category" class="text-gray-600 mb-2"></p>
+            <p id="product-price" class="text-gray-800 font-bold mb-2"></p>
+            <p id="product-description" class="text-gray-600 mb-2"></p> <!-- Descripción del producto -->
+            <p id="product-stock" class="text-gray-600"></p>
+        </div>
+    </div>
+</body>
+</html>
