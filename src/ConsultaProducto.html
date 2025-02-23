@@ -31,8 +31,9 @@
                 document.getElementById('product-category').innerText = product.category;
                 document.getElementById('product-price').innerText = `$${product.price}`;
                 document.getElementById('product-description').innerText = product.description; // Mostrar descripción
-                document.getElementById('product-stock').innerText = product.stock > 0 ? 'Disponible' : 'Agotado';
-                document.getElementById('product-stock').className = product.stock > 0 ? 'text-green-600' : 'text-red-600';
+                document.getElementById('product-stock').innerText = `Stock: ${product.stock}`; // Mostrar stock
+                document.getElementById('product-stock-status').innerText = product.stock > 0 ? 'Disponible' : 'Agotado';
+                document.getElementById('product-stock-status').className = product.stock > 0 ? 'text-green-600' : 'text-red-600';
             } catch (error) {
                 errorMessage.innerText = "Error al cargar los detalles del producto";
                 errorMessage.classList.remove('hidden');
@@ -60,7 +61,8 @@
             <p id="product-category" class="text-gray-600 mb-2"></p>
             <p id="product-price" class="text-gray-800 font-bold mb-2"></p>
             <p id="product-description" class="text-gray-600 mb-2"></p> <!-- Descripción del producto -->
-            <p id="product-stock" class="text-gray-600"></p>
+            <p id="product-stock" class="text-gray-600 mb-2"></p> <!-- Stock del producto -->
+            <p id="product-stock-status" class="text-gray-600"></p> <!-- Estado del stock -->
         </div>
     </div>
 </body>
