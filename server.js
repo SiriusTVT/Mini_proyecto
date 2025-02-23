@@ -45,6 +45,14 @@ app.get("/Main.html", (req, res) => {
     res.sendFile(path.join(__dirname, "src/Main.html"));
 });
 
+app.get("/PaginaPrincipal.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "src/PaginaPrincipal.html"));
+});
+
+app.get("/GestionProductos.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "src/GestionProductos.html"));
+});
+
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {

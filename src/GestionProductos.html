@@ -1,0 +1,169 @@
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Gestión de Productos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const products = document.querySelectorAll('.product');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', filterProducts);
+            });
+
+            function filterProducts() {
+                const selectedCategories = Array.from(checkboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+
+                products.forEach(product => {
+                    const productCategory = product.getAttribute('data-category');
+                    if (selectedCategories.length === 0 || selectedCategories.includes(productCategory)) {
+                        product.classList.remove('hidden');
+                    } else {
+                        product.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body class="font-roboto bg-gray-100">
+    <div class="container mx-auto p-4">
+        <nav class="bg-white p-4 rounded-lg shadow mb-4">
+            <ul class="flex justify-between items-center">
+                <li>
+                    <a href="/PaginaPrincipal.html" class="text-blue-600 text-xl font-bold">Inicio</a>
+                </li>
+            </ul>
+        </nav>
+        <h1 class="text-3xl font-bold mb-4 text-center text-blue-600">Gestión de Productos</h1>
+        <div class="flex flex-col md:flex-row md:space-x-4">
+            <div class="w-full md:w-1/4 mb-4 md:mb-0 bg-white p-4 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-2 text-blue-600">Categorías</h2>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input class="form-checkbox h-5 w-5 text-blue-600" type="checkbox" value="Electrónica"/>
+                        <span class="ml-2 text-gray-700">Electrónica</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input class="form-checkbox h-5 w-5 text-blue-600" type="checkbox" value="Ropa"/>
+                        <span class="ml-2 text-gray-700">Ropa</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input class="form-checkbox h-5 w-5 text-blue-600" type="checkbox" value="Hogar"/>
+                        <span class="ml-2 text-gray-700">Hogar</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input class="form-checkbox h-5 w-5 text-blue-600" type="checkbox" value="Juguetes"/>
+                        <span class="ml-2 text-gray-700">Juguetes</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input class="form-checkbox h-5 w-5 text-blue-600" type="checkbox" value="Libros"/>
+                        <span class="ml-2 text-gray-700">Libros</span>
+                    </label>
+                </div>
+            </div>
+            <div class="w-full md:w-3/4">
+                <h2 class="text-xl font-semibold mb-2 text-blue-600">Productos</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Electrónica">
+                        <img alt="Imagen de un teléfono móvil de alta gama" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/VNOLoqn7hPjuIaC_0kBbNfGbalESs4w_oQ3brvICFuo.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Teléfono Móvil</h3>
+                        <p class="text-gray-600">Categoría: Electrónica</p>
+                        <p class="text-gray-800 font-bold">$699</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Ropa">
+                        <img alt="Imagen de una camiseta de algodón blanca" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/yN347ofYeBZFwPxYsB6rK3bLdoBOK6ioh-tY-SIWPbg.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Camiseta</h3>
+                        <p class="text-gray-600">Categoría: Ropa</p>
+                        <p class="text-gray-800 font-bold">$19</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Hogar">
+                        <img alt="Imagen de una lámpara de mesa moderna" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/7ngDbcNGlS-PkZ62L0ctrlxl9_ms_RtLPoeURAHZOoE.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Lámpara de Mesa</h3>
+                        <p class="text-gray-600">Categoría: Hogar</p>
+                        <p class="text-gray-800 font-bold">$45</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Juguetes">
+                        <img alt="Imagen de un juguete de construcción de bloques" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/IIol3mNwXon9eGVcHUKuLh8KRj89_4FthliNnk27Rvk.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Juguete de Bloques</h3>
+                        <p class="text-gray-600">Categoría: Juguetes</p>
+                        <p class="text-gray-800 font-bold">$29</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Libros">
+                        <img alt="Imagen de un libro de tapa dura" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/OQYBOEOrYEYqVfDpYj6qtba3HjbpEDX8a_rxQzo40_Q.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Libro de Aventuras</h3>
+                        <p class="text-gray-600">Categoría: Libros</p>
+                        <p class="text-gray-800 font-bold">$15</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Electrónica">
+                        <img alt="Imagen de una computadora portátil moderna" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/0FXQqJlfvSNH2oc-GDIOZqCorgtm-Fqr1P9uo7KRgus.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Computadora Portátil</h3>
+                        <p class="text-gray-600">Categoría: Electrónica</p>
+                        <p class="text-gray-800 font-bold">$999</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Ropa">
+                        <img alt="Imagen de un par de pantalones vaqueros azules" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/A0yZa9E1lsssAo6eNQVQc2gXWWRPH717BZYFTxJiac0.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Pantalones Vaqueros</h3>
+                        <p class="text-gray-600">Categoría: Ropa</p>
+                        <p class="text-gray-800 font-bold">$49</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Hogar">
+                        <img alt="Imagen de una silla de oficina ergonómica" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/Bt7pFjAmdTcrqSvCjRYP4YvSZzk2D61ryIJmqj9ABek.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Silla de Oficina</h3>
+                        <p class="text-gray-600">Categoría: Hogar</p>
+                        <p class="text-gray-800 font-bold">$120</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Juguetes">
+                        <img alt="Imagen de un peluche de oso marrón" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/e3SYdtiZOYeiZZjtPT0GCssYeqqtn0PI5t0PsYI249M.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Peluche de Oso</h3>
+                        <p class="text-gray-600">Categoría: Juguetes</p>
+                        <p class="text-gray-800 font-bold">$25</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Libros">
+                        <img alt="Imagen de un libro de cocina con recetas" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/LJuEV7BXvu1LaB7eHqxRml008DEBZCCYV4DSqbeZ0vs.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Libro de Cocina</h3>
+                        <p class="text-gray-600">Categoría: Libros</p>
+                        <p class="text-gray-800 font-bold">$22</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Electrónica">
+                        <img alt="Imagen de un reloj inteligente moderno" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/NiYBBwdv-zU758RCw9nMdOgXQbUKZ6tu2jVd_efE394.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Reloj Inteligente</h3>
+                        <p class="text-gray-600">Categoría: Electrónica</p>
+                        <p class="text-gray-800 font-bold">$199</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Ropa">
+                        <img alt="Imagen de una chaqueta de cuero negra" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/WZGnY0-6IOvk0-eGABG1Ah1TEwKHkvPfSiComuRctws.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Chaqueta de Cuero</h3>
+                        <p class="text-gray-600">Categoría: Ropa</p>
+                        <p class="text-gray-800 font-bold">$150</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Hogar">
+                        <img alt="Imagen de una mesa de comedor de madera" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/4PLSuit4UKEvHoEysE7XaUgiqVdGzqQgAsVv2xGo__I.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Mesa de Comedor</h3>
+                        <p class="text-gray-600">Categoría: Hogar</p>
+                        <p class="text-gray-800 font-bold">$300</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Juguetes">
+                        <img alt="Imagen de un set de figuras de acción" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/BDjLhuZ80qTUorD2JX3VTCZlnocK8Va-l2Cbq4C7nCo.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Figuras de Acción</h3>
+                        <p class="text-gray-600">Categoría: Juguetes</p>
+                        <p class="text-gray-800 font-bold">$35</p>
+                    </div>
+                    <div class="product bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300" data-category="Libros">
+                        <img alt="Imagen de un libro de ciencia ficción" class="w-full h-40 object-cover mb-2 rounded" height="200" src="https://storage.googleapis.com/a1aa/image/QeuvJlO78-h4HVzHtYKo78VaHPC_hNn4jegM8x85ie0.jpg" width="300"/>
+                        <h3 class="text-lg font-semibold text-gray-800">Libro de Ciencia Ficción</h3>
+                        <p class="text-gray-600">Categoría: Libros</p>
+                        <p class="text-gray-800 font-bold">$18</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
