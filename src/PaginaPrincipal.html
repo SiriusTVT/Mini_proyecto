@@ -60,69 +60,34 @@
    </div>
    <div class="bg-gray-100 py-8">
     <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-     <div class="bg-white p-4 rounded shadow text-center">
-      <img alt="Envío gratis icon" class="mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/bPuevLGvotCPR9wUM0Dy_WcorrlFL3J4wpKFA0z8gD0.jpg" width="100"/>
-      <h2 class="text-lg font-bold">
-       Envío gratis
-      </h2>
-      <p class="text-sm">
-       Beneficio por ser tu primera compra.
-      </p>
-      <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-       Mostrar productos
-      </button>
-     </div>
-     <div class="bg-white p-4 rounded shadow text-center">
-      <img alt="Visto recientemente icon" class="mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/XYzTN0kDMgQDDKYSNx7EI-dwJnl_aC7Cj7c0WzBTLtg.jpg" width="100"/>
-      <h2 class="text-lg font-bold">
-       Visto recientemente
-      </h2>
-      <p class="text-sm">
-       Aceite Compresor Aw Iso 100 Sae 30-40...
-      </p>
-      <p class="text-sm font-bold">
-       $ 47.900
-      </p>
-      <p class="text-sm text-green-500">
-       Envío gratis por ser tu primera compra
-      </p>
-     </div>
-     <div class="bg-white p-4 rounded shadow text-center">
-      <img alt="Ingresa a tu cuenta icon" class="mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/alvtYGYKOIZ6lT7E0xc3Hlpsw-v90vBc7fZBUpof8Ug.jpg" width="100"/>
-      <h2 class="text-lg font-bold">
-       Ingresa a tu cuenta
-      </h2>
-      <p class="text-sm">
-       Disfruta de ofertas y compra sin límites.
-      </p>
-      <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-       Ingresar a tu cuenta
-      </button>
-     </div>
-     <div class="bg-white p-4 rounded shadow text-center">
-      <img alt="Medios de pago icon" class="mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/__3GVSasp9wpLILdiJ2bM7A3eY_6WdmLLfdfZJ8sT-o.jpg" width="100"/>
-      <h2 class="text-lg font-bold">
-       Medios de pago
-      </h2>
-      <p class="text-sm">
-       Paga tus compras de forma rápida y segura.
-      </p>
-      <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-       Conocer medios de pago
-      </button>
-     </div>
-     <div class="bg-white p-4 rounded shadow text-center">
-      <img alt="Más vendidos icon" class="mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/dIj8nUg6xMzq9zDgy0uUNLS6m35lgXo-AHAwKpkHyB0.jpg" width="100"/>
-      <h2 class="text-lg font-bold">
-       Más vendidos
-      </h2>
-      <p class="text-sm">
-       Explora los productos que son tendencia.
-      </p>
-      <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-       Ir a Más vendidos
-      </button>
-     </div>
+        <script>
+            async function loadTopProducts() {
+                try {
+                    const response = await fetch('/products'); // Obtiene productos del backend
+                    const products = await response.json();
+                    const container = document.querySelector('.grid');
+        
+                    container.innerHTML = ""; // Limpia productos estáticos
+        
+                    products.slice(0, 5).forEach(product => { // Muestra los primeros 5 productos
+                        const productElement = `
+                            <div class="bg-white p-4 rounded shadow text-center">
+                                <img class="mx-auto mb-4" src="${product.imageUrl}" height="100" width="100" alt="${product.name}">
+                                <h2 class="text-lg font-bold">${product.name}</h2>
+                                <p class="text-sm">${product.description}</p>
+                                <p class="text-sm font-bold">$${product.price}</p>
+                                <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Comprar</button>
+                            </div>
+                        `;
+                        container.innerHTML += productElement;
+                    });
+                } catch (error) {
+                    console.error("Error al cargar los productos:", error);
+                }
+            }
+        
+            window.onload = loadTopProducts; // Llama a la función cuando se carga la página
+        </script>
     </div>
    </div>
   </main>

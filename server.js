@@ -25,6 +25,18 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
+// Definición del esquema de productos
+const productSchema = new mongoose.Schema({
+    name: String,
+    description: String,
+    price: Number,
+    stock: Number,
+    category: String,
+    imageUrl: String
+});
+
+const Product = mongoose.model('Product', productSchema);
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -51,6 +63,15 @@ app.get("/PaginaPrincipal.html", (req, res) => {
 
 app.get("/GestionProductos.html", (req, res) => {
     res.sendFile(path.join(__dirname, "src/GestionProductos.html"));
+});
+
+app.get('/products', async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.json(products);
+    } catch (err) {
+        res.status(500).send("Error al obtener los productos");
+    }
 });
 
 app.post("/login", async (req, res) => {
@@ -83,6 +104,25 @@ app.post("/register", async (req, res) => {
         res.send("Registro exitoso");
     } catch (err) {
         res.status(500).send("Error en el registro");
+    }
+});
+
+app.post('/add-product', async (req, res) => {
+    const { name, description, price, stock, category, imageUrl } = req.body;
+    const newProduct = new Product({ name, description, price, stock, category, imageUrl });
+    await newProduct.save();
+    res.send('Producto agregado con éxito');
+});
+
+app.delete('/products/:id', async (req, res) => {
+    try {
+        const result = await Product.findByIdAndDelete(req.params.id);
+        if (!result) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        res.json({ message: 'Producto eliminado correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar el producto' });
     }
 });
 
