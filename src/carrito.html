@@ -10,6 +10,53 @@
             font-family: 'Roboto', sans-serif;
         }
     </style>
+    <script>
+        async function loadCartProducts() {
+            try {
+                const response = await fetch('/carrito-products');
+                const products = await response.json();
+                const container = document.querySelector('.space-y-4');
+                container.innerHTML = ""; // Limpia productos estáticos
+
+                let total = 0;
+
+                products.forEach(product => {
+                    total += product.price;
+                    const productElement = `
+                        <div class="flex items-center justify-between">
+                            <img alt="Imagen de un producto en el carrito" class="w-16 h-16 object-cover rounded" height="100" src="${product.imageUrl}" width="100"/>
+                            <div class="flex-1 ml-4">
+                                <h4 class="text-sm font-medium text-gray-800">${product.name}</h4>
+                                <p class="text-sm text-gray-600">${product.description}</p>
+                            </div>
+                            <span class="text-gray-800 font-medium">$${product.price}</span>
+                        </div>
+                    `;
+                    container.innerHTML += productElement;
+                });
+
+                document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
+            } catch (error) {
+                console.error("Error al cargar los productos del carrito:", error);
+            }
+        }
+
+        async function emptyCart() {
+            try {
+                const response = await fetch('/vaciar-carrito', {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error("Error al vaciar el carrito");
+                }
+                loadCartProducts(); // Recargar los productos del carrito
+            } catch (error) {
+                console.error("Error al vaciar el carrito:", error);
+            }
+        }
+
+        window.onload = loadCartProducts; // Llama a la función cuando se carga la página
+    </script>
 </head>
 <body class="bg-gray-100">
     <header class="bg-white shadow">
@@ -29,15 +76,15 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-800">Productos en tu carrito</h3>
-                    <a class="text-sm text-red-500 hover:underline" href="#">Vaciar carrito</a>
+                    <a class="text-sm text-red-500 hover:underline" href="#" onclick="emptyCart()">Vaciar carrito</a>
                 </div>
                 <div class="space-y-4">
-                    <!-- No products in the cart -->
+                    <!-- Products will be loaded here -->
                 </div>
                 <div class="mt-6 border-t pt-4">
                     <div class="flex justify-between items-center">
                         <span class="text-lg font-medium text-gray-800">Total</span>
-                        <span class="text-lg font-medium text-gray-800">$0.00</span>
+                        <span id="total-price" class="text-lg font-medium text-gray-800">$0.00</span>
                     </div>
                     <div class="mt-4">
                         <button class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Proceder al pago</button>

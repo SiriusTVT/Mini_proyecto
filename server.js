@@ -157,6 +157,20 @@ app.post('/carrito', (req, res) => {
     res.send('Producto agregado al carrito');
 });
 
+app.post('/vaciar-carrito', (req, res) => {
+    cart = [];
+    res.send('Carrito vaciado');
+});
+
+app.get('/carrito-products', async (req, res) => {
+    try {
+        const products = await Product.find({ _id: { $in: cart } });
+        res.json(products);
+    } catch (err) {
+        res.status(500).send("Error al obtener los productos del carrito");
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
