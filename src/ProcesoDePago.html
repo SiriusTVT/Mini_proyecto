@@ -1,0 +1,135 @@
+<html>
+<head>
+    <title>Pago</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-roboto bg-gray-100">
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div>
+                <a class="text-gray-800 text-xl font-bold" href="#">Mercado Libre</a>
+            </div>
+            <div class="flex items-center">
+                <a class="text-gray-800 text-sm font-medium mx-2" href="/PaginaPrincipal.html">Inicio</a>
+                <!-- Removed Tienda, Contacto, and Carrito links -->
+            </div>
+        </div>
+    </header>
+    <div class="container mx-auto p-4">
+        <a href="/carrito" class="text-blue-600 text-xl mb-4 inline-block">
+            <i class="fas fa-arrow-left"></i> Volver al carrito
+        </a>
+        <h1 class="text-3xl font-bold mb-6">Pago</h1>
+        
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Opciones de Entrega</h2>
+            
+            <div class="mb-4">
+                <input type="radio" id="domicilio" name="entrega" value="domicilio" class="mr-2">
+                <label for="domicilio" class="text-lg">Entrega a Domicilio</label>
+            </div>
+            
+            <div id="direccion-domicilio" class="hidden mb-4">
+                <label for="direccion" class="block text-lg mb-2">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" class="w-full p-2 border border-gray-300 rounded-lg">
+            </div>
+            
+            <div class="mb-4">
+                <input type="radio" id="tienda" name="entrega" value="tienda" class="mr-2">
+                <label for="tienda" class="text-lg">Recoger en Tienda</label>
+            </div>
+            
+            <div id="direccion-tienda" class="hidden mb-4">
+                <h3 class="text-lg font-semibold">Dirección del Punto Físico:</h3>
+                <p class="mb-2">Calle Falsa 123, Ciudad Ejemplo</p>
+                <h3 class="text-lg font-semibold">Horario:</h3>
+                <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+                <p>Sábado: 10:00 AM - 4:00 PM</p>
+                <p>Domingo: Cerrado</p>
+            </div>
+
+            <h2 class="text-2xl font-semibold mb-4">Resumen de la Compra</h2>
+            <div id="cart-summary" class="mb-4">
+                <!-- Cart summary will be loaded here -->
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-lg font-medium text-gray-800">Total a Pagar:</span>
+                <span id="total-price" class="text-lg font-medium text-gray-800">$0.00</span>
+            </div>
+
+            <button id="finalizar-compra" class="w-full bg-blue-500 text-white p-3 rounded-lg mt-4 hover:bg-blue-600">
+                Finalizar Compra
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function loadCartSummary() {
+            try {
+                const response = await fetch('/carrito-products');
+                const products = await response.json();
+                const container = document.getElementById('cart-summary');
+                container.innerHTML = ""; // Limpia productos estáticos
+
+                let total = 0;
+
+                products.forEach(product => {
+                    total += product.price * product.quantity;
+                    const productElement = `
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-800">${product.name} (x${product.quantity})</span>
+                            <span class="text-gray-800">$${(product.price * product.quantity).toFixed(2)}</span>
+                        </div>
+                    `;
+                    container.innerHTML += productElement;
+                });
+
+                document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
+            } catch (error) {
+                console.error("Error al cargar el resumen del carrito:", error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadCartSummary();
+
+            const domicilioRadio = document.getElementById('domicilio');
+            const tiendaRadio = document.getElementById('tienda');
+            const direccionDomicilio = document.getElementById('direccion-domicilio');
+            const direccionTienda = document.getElementById('direccion-tienda');
+
+            domicilioRadio.addEventListener('change', function () {
+                if (domicilioRadio.checked) {
+                    direccionDomicilio.classList.remove('hidden');
+                    direccionTienda.classList.add('hidden');
+                }
+            });
+
+            tiendaRadio.addEventListener('change', function () {
+                if (tiendaRadio.checked) {
+                    direccionTienda.classList.remove('hidden');
+                    direccionDomicilio.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('finalizar-compra').addEventListener('click', async function () {
+                try {
+                    const response = await fetch('/finalizar-compra', {
+                        method: 'POST'
+                    });
+                    if (!response.ok) {
+                        throw new Error("Error al finalizar la compra");
+                    }
+                    alert('Compra finalizada con éxito!');
+                    window.location.href = '/PaginaPrincipal.html';
+                } catch (error) {
+                    console.error("Error al finalizar la compra:", error);
+                    alert("Error al finalizar la compra");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -73,6 +73,10 @@ app.get("/carrito", (req, res) => {
     res.sendFile(path.join(__dirname, "src/carrito.html"));
 });
 
+app.get("/ProcesoDePago.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "src/ProcesoDePago.html"));
+});
+
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find();
@@ -155,11 +159,9 @@ app.post('/carrito', async (req, res) => {
     const { productId, quantity } = req.body;
     try {
         const product = await Product.findById(productId);
-        if (!product || product.stock < quantity) {
-            return res.status(400).send("Stock insuficiente");
+        if (!product) {
+            return res.status(400).send("Producto no encontrado");
         }
-        product.stock -= quantity;
-        await product.save();
 
         const existingProduct = cart.find(item => item.productId === productId);
         if (existingProduct) {
@@ -205,17 +207,26 @@ app.post('/actualizar-carrito', async (req, res) => {
 
 app.post('/vaciar-carrito', async (req, res) => {
     try {
-        for (const item of cart) {
-            const product = await Product.findById(item.productId);
-            if (product) {
-                product.stock += item.quantity;
-                await product.save();
-            }
-        }
         cart = [];
         res.send('Carrito vaciado');
     } catch (err) {
         res.status(500).send("Error al vaciar el carrito");
+    }
+});
+
+app.post('/finalizar-compra', async (req, res) => {
+    try {
+        for (const item of cart) {
+            const product = await Product.findById(item.productId);
+            if (product) {
+                product.stock -= item.quantity;
+                await product.save();
+            }
+        }
+        cart = [];
+        res.send('Compra finalizada con éxito');
+    } catch (err) {
+        res.status(500).send("Error al finalizar la compra");
     }
 });
 

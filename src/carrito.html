@@ -29,7 +29,8 @@
                                 <h4 class="text-sm font-medium text-gray-800">${product.name}</h4>
                                 <p class="text-sm text-gray-600">${product.description}</p>
                                 <p class="text-sm text-gray-600">Cantidad: 
-                                    <input type="number" min="1" value="${product.quantity}" onchange="updateCart('${product._id}', this.value)" class="w-16 p-1 border rounded">
+                                    <input type="number" min="1" value="${product.quantity}" max="${product.stock}" onchange="updateCart('${product._id}', this.value)" class="w-16 p-1 border rounded">
+                                    <span class="text-red-500 hidden" id="stock-alert-${product._id}">Stock insuficiente</span>
                                 </p>
                             </div>
                             <span class="text-gray-800 font-medium">$${(product.price * product.quantity).toFixed(2)}</span>
@@ -46,14 +47,19 @@
 
         async function updateCart(productId, quantity) {
             try {
-                const response = await fetch('/actualizar-carrito', {
+                const response = await fetch(`/products/${productId}`);
+                const product = await response.json();
+                const stockAlert = document.getElementById(`stock-alert-${productId}`);
+                stockAlert.classList.add('hidden');
+
+                const updateResponse = await fetch('/actualizar-carrito', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ productId, quantity: parseInt(quantity) })
                 });
-                if (!response.ok) {
+                if (!updateResponse.ok) {
                     throw new Error("Error al actualizar la cantidad en el carrito");
                 }
                 loadCartProducts(); // Recargar los productos del carrito
@@ -74,6 +80,10 @@
             } catch (error) {
                 console.error("Error al vaciar el carrito:", error);
             }
+        }
+
+        function proceedToPayment() {
+            window.location.href = '/ProcesoDePago.html';
         }
 
         window.onload = loadCartProducts; // Llama a la función cuando se carga la página
@@ -108,7 +118,7 @@
                         <span id="total-price" class="text-lg font-medium text-gray-800">$0.00</span>
                     </div>
                     <div class="mt-4">
-                        <button class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Proceder al pago</button>
+                        <button class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600" onclick="proceedToPayment()">Proceder al pago</button>
                     </div>
                 </div>
             </div>
