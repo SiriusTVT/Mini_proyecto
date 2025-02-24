@@ -21,15 +21,18 @@
                 let total = 0;
 
                 products.forEach(product => {
-                    total += product.price;
+                    total += product.price * product.quantity;
                     const productElement = `
                         <div class="flex items-center justify-between">
                             <img alt="Imagen de un producto en el carrito" class="w-16 h-16 object-cover rounded" height="100" src="${product.imageUrl}" width="100"/>
                             <div class="flex-1 ml-4">
                                 <h4 class="text-sm font-medium text-gray-800">${product.name}</h4>
                                 <p class="text-sm text-gray-600">${product.description}</p>
+                                <p class="text-sm text-gray-600">Cantidad: 
+                                    <input type="number" min="1" value="${product.quantity}" onchange="updateCart('${product._id}', this.value)" class="w-16 p-1 border rounded">
+                                </p>
                             </div>
-                            <span class="text-gray-800 font-medium">$${product.price}</span>
+                            <span class="text-gray-800 font-medium">$${(product.price * product.quantity).toFixed(2)}</span>
                         </div>
                     `;
                     container.innerHTML += productElement;
@@ -38,6 +41,24 @@
                 document.getElementById('total-price').innerText = `$${total.toFixed(2)}`;
             } catch (error) {
                 console.error("Error al cargar los productos del carrito:", error);
+            }
+        }
+
+        async function updateCart(productId, quantity) {
+            try {
+                const response = await fetch('/actualizar-carrito', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId, quantity: parseInt(quantity) })
+                });
+                if (!response.ok) {
+                    throw new Error("Error al actualizar la cantidad en el carrito");
+                }
+                loadCartProducts(); // Recargar los productos del carrito
+            } catch (error) {
+                console.error("Error al actualizar la cantidad en el carrito:", error);
             }
         }
 

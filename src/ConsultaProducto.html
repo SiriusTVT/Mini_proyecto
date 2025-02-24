@@ -34,6 +34,8 @@
                 document.getElementById('product-stock').innerText = `Stock: ${product.stock}`; // Mostrar stock
                 document.getElementById('product-stock-status').innerText = product.stock > 0 ? 'Disponible' : 'Agotado';
                 document.getElementById('product-stock-status').className = product.stock > 0 ? 'text-green-600' : 'text-red-600';
+                document.getElementById('quantity').max = product.stock; // Set max quantity based on stock
+                document.getElementById('quantity-value').innerText = 1; // Set initial quantity value
             } catch (error) {
                 errorMessage.innerText = "Error al cargar los detalles del producto";
                 errorMessage.classList.remove('hidden');
@@ -41,16 +43,21 @@
             }
         }
 
+        function updateQuantityValue(value) {
+            document.getElementById('quantity-value').innerText = value;
+        }
+
         async function addToCart() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
+            const quantity = parseInt(document.getElementById('quantity').value);
             try {
                 const response = await fetch(`/carrito`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ productId })
+                    body: JSON.stringify({ productId, quantity })
                 });
                 if (!response.ok) {
                     throw new Error("Error al agregar el producto al carrito");
@@ -89,6 +96,11 @@
             <p id="product-description" class="text-gray-600 mb-2"></p> <!-- Descripción del producto -->
             <p id="product-stock" class="text-gray-600 mb-2"></p> <!-- Stock del producto -->
             <p id="product-stock-status" class="text-gray-600"></p> <!-- Estado del stock -->
+            <div class="mt-2 flex items-center">
+                <label for="quantity" class="block text-gray-700 mr-2">Cantidad:</label>
+                <input type="range" id="quantity" min="1" value="1" class="w-1/16" oninput="updateQuantityValue(this.value)">
+                <span id="quantity-value" class="ml-2 text-gray-700">1</span>
+            </div>
             <button onclick="addToCart()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Agregar al carrito</button>
         </div>
     </div>
