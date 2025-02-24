@@ -149,6 +149,14 @@ app.delete('/products/:id', async (req, res) => {
     }
 });
 
+let cart = [];
+
+app.post('/carrito', (req, res) => {
+    const { productId } = req.body;
+    cart.push(productId);
+    res.send('Producto agregado al carrito');
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

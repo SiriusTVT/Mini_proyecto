@@ -41,6 +41,27 @@
             }
         }
 
+        async function addToCart() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            try {
+                const response = await fetch(`/carrito`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId })
+                });
+                if (!response.ok) {
+                    throw new Error("Error al agregar el producto al carrito");
+                }
+                alert("Producto agregado al carrito");
+            } catch (error) {
+                console.error("Error al agregar el producto al carrito:", error);
+                alert("Error al agregar el producto al carrito");
+            }
+        }
+
         window.onload = loadProductDetails; // Llama a la función cuando se cargue la página
     </script>
 </head>
@@ -50,6 +71,11 @@
             <ul class="flex justify-between items-center">
                 <li>
                     <a href="/GestionProductos.html" class="text-blue-600 text-xl font-bold">Volver</a>
+                </li>
+                <li>
+                    <a href="/carrito" class="text-blue-600 text-xl">
+                        <i class="fas fa-shopping-cart"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
@@ -63,6 +89,7 @@
             <p id="product-description" class="text-gray-600 mb-2"></p> <!-- Descripción del producto -->
             <p id="product-stock" class="text-gray-600 mb-2"></p> <!-- Stock del producto -->
             <p id="product-stock-status" class="text-gray-600"></p> <!-- Estado del stock -->
+            <button onclick="addToCart()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Agregar al carrito</button>
         </div>
     </div>
 </body>
