@@ -70,7 +70,7 @@ app.get("/ConsultaProducto.html", (req, res) => {
 });
 
 app.get("/carrito", (req, res) => {
-    res.sendFile(path.join(__dirname, "carrito.html"));
+    res.sendFile(path.join(__dirname, "src/carrito.html"));
 });
 
 app.get('/products', async (req, res) => {
