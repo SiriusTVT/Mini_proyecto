@@ -69,6 +69,10 @@ app.get("/ConsultaProducto.html", (req, res) => {
     res.sendFile(path.join(__dirname, "src/ConsultaProducto.html"));
 });
 
+app.get("/carrito", (req, res) => {
+    res.sendFile(path.join(__dirname, "carrito.html"));
+});
+
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find();
