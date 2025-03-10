@@ -77,7 +77,7 @@ app.get("/ProcesoDePago.html", (req, res) => {
     res.sendFile(path.join(__dirname, "src/ProcesoDePago.html"));
 });
 
-app.get('/products', async (req, res) => {
+app.get('/products', async (req, res) => { // Obtener todos los productos
     try {
         const products = await Product.find();
         res.json(products);
@@ -86,7 +86,7 @@ app.get('/products', async (req, res) => {
     }
 });
 
-app.get('/products/:id', async (req, res) => {
+app.get('/products/:id', async (req, res) => { // Obtener un producto por ID
     console.log(`Received request for product ID: ${req.params.id}`); // Registro de depuración
     try {
         const product = await Product.findById(req.params.id);
@@ -101,7 +101,7 @@ app.get('/products/:id', async (req, res) => {
     }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", async (req, res) => { // Inicio de sesión
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
@@ -116,7 +116,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/register", async (req, res) => {
+app.post("/register", async (req, res) => { // Registro de usuario
     const { name, email, password } = req.body;
     try {
         // Verificar si el usuario ya existe
