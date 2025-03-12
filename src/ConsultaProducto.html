@@ -35,7 +35,15 @@
                 document.getElementById('product-stock-status').innerText = product.stock > 0 ? 'Disponible' : 'Agotado';
                 document.getElementById('product-stock-status').className = product.stock > 0 ? 'text-green-600' : 'text-red-600';
                 document.getElementById('quantity').max = product.stock; // Set max quantity based on stock
+                document.getElementById('quantity').disabled = product.stock <= 0; // Disable input if no stock
                 document.getElementById('quantity-value').innerText = 1; // Set initial quantity value
+                
+                // Disable add to cart button if no stock
+                const addButton = document.getElementById('add-to-cart-btn');
+                addButton.disabled = product.stock <= 0;
+                addButton.className = product.stock > 0 
+                    ? 'mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'
+                    : 'mt-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed';
             } catch (error) {
                 errorMessage.innerText = "Error al cargar los detalles del producto";
                 errorMessage.classList.remove('hidden');
@@ -51,6 +59,13 @@
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
             const quantity = parseInt(document.getElementById('quantity').value);
+            
+            // Prevent adding out-of-stock products
+            if (document.getElementById('quantity').disabled) {
+                alert('El producto no está disponible');
+                return;
+            }
+            
             try {
                 const response = await fetch(`/carrito`, {
                     method: 'POST',
@@ -101,7 +116,7 @@
                 <input type="range" id="quantity" min="1" value="1" class="w-1/16" oninput="updateQuantityValue(this.value)">
                 <span id="quantity-value" class="ml-2 text-gray-700">1</span>
             </div>
-            <button onclick="addToCart()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Agregar al carrito</button>
+            <button id="add-to-cart-btn" onclick="addToCart()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Agregar al carrito</button>
         </div>
     </div>
 </body>
