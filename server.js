@@ -79,6 +79,10 @@ app.get("/ProcesoDePago.html", (req, res) => {
     res.sendFile(path.join(__dirname, "src/ProcesoDePago.html"));
 });
 
+app.get("/user", (req, res) => {
+    res.sendFile(path.join(__dirname, "src/user.html"));
+});
+
 app.get('/products', async (req, res) => { // Obtener todos los productos
     try {
         const products = await Product.find();
