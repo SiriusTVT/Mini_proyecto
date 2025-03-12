@@ -3,8 +3,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const bcrypt = require('bcrypt'); // Importar bcrypt
+const saltRounds = 10; // Número de rondas de sal para bcrypt
 
 dotenv.config();
 
