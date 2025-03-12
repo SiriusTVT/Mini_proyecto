@@ -3,6 +3,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 dotenv.config();
 
@@ -105,11 +107,15 @@ app.post("/login", async (req, res) => { // Inicio de sesión
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
-        if (!user || user.password !== password) {
-            return res
-                .status(400)
-                .send("Usuario no encontrado o contraseña incorrecta");
+        if (!user) {
+            return res.status(400).send("Usuario no encontrado o contraseña incorrecta");
         }
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(400).send("Usuario no encontrado o contraseña incorrecta");
+        }
+
         res.send("Inicio de sesión exitoso");
     } catch (err) {
         res.status(500).send("Error en el inicio de sesión");
@@ -125,8 +131,11 @@ app.post("/register", async (req, res) => { // Registro de usuario
             return res.status(400).send("El usuario ya existe");
         }
 
+        // Encriptar la contraseña
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         // Crear un nuevo usuario
-        const newUser = new User({ name, email, password });
+        const newUser = new User({ name, email, password: hashedPassword });
         await newUser.save();
         res.send("Registro exitoso");
     } catch (err) {
