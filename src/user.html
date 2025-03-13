@@ -126,7 +126,7 @@
       </div>
      </div>
      <ul>
-      <li class="flex items-center justify-between p-4 border-b">
+      <li class="flex items-center justify-between p-4 border-b cursor-pointer" onclick="toggleSection('personal-info')">
        <div class="flex items-center">
         <i class="fas fa-user text-blue-500 mr-2">
         </i>
@@ -139,9 +139,49 @@
          </p>
         </div>
        </div>
-       <i class="fas fa-chevron-right text-gray-600">
+       <i class="fas fa-chevron-right text-gray-600" id="personal-info-icon">
        </i>
       </li>
+      <div class="hidden" id="personal-info">
+       <form class="space-y-4 p-4" id="updateUserForm">
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="name">
+          Nombre
+         </label>
+         <input class="block w-full p-2 border border-gray-300 rounded" id="name" name="name" required="" type="text"/>
+        </div>
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="email">
+          Correo Electrónico
+         </label>
+         <input class="block w-full p-2 border border-gray-300 rounded" id="email" name="email" required="" type="email"/>
+        </div>
+        <button class="w-full bg-blue-500 text-white p-2 rounded" type="submit">
+         Actualizar Datos
+        </button>
+        <div class="text-red-500 text-sm mt-2 hidden" id="update-user-message">
+        </div>
+       </form>
+       <form class="space-y-4 p-4 mt-6" id="updatePasswordForm">
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="currentPassword">
+          Contraseña Actual
+         </label>
+         <input class="block w-full p-2 border border-gray-300 rounded" id="currentPassword" name="currentPassword" required="" type="password"/>
+        </div>
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="newPassword">
+          Nueva Contraseña
+         </label>
+         <input class="block w-full p-2 border border-gray-300 rounded" id="newPassword" name="newPassword" required="" type="password"/>
+        </div>
+        <button class="w-full bg-blue-500 text-white p-2 rounded" type="submit">
+         Actualizar Contraseña
+        </button>
+        <div class="text-red-500 text-sm mt-2 hidden" id="update-password-message">
+        </div>
+       </form>
+      </div>
       <li class="flex items-center justify-between p-4 border-b">
        <div class="flex items-center">
         <i class="fas fa-id-card text-blue-500 mr-2">
@@ -258,11 +298,87 @@
             const user = await response.json();
             document.getElementById('user-name').innerText = user.name;
             document.getElementById('user-email').innerText = user.email;
+            document.getElementById('name').value = user.name;
+            document.getElementById('email').value = user.email;
         } catch (error) {
             console.error("Error al cargar los datos del usuario:", error);
             window.location.href = '/login';
         }
     }
+
+    function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        const icon = document.getElementById(`${sectionId}-icon`);
+        if (section.classList.contains('hidden')) {
+            section.classList.remove('hidden');
+            icon.classList.remove('fa-chevron-right');
+            icon.classList.add('fa-chevron-down');
+        } else {
+            section.classList.add('hidden');
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-right');
+        }
+    }
+
+    document.getElementById('updateUserForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/update-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                document.getElementById('update-user-message').innerText = message;
+                document.getElementById('update-user-message').classList.remove('hidden');
+            } else {
+                document.getElementById('update-user-message').classList.add('hidden');
+                alert('Datos actualizados correctamente');
+                loadUserData();
+            }
+        } catch (error) {
+            document.getElementById('update-user-message').innerText = 'Error al actualizar los datos';
+            document.getElementById('update-user-message').classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('updatePasswordForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/update-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                document.getElementById('update-password-message').innerText = message;
+                document.getElementById('update-password-message').classList.remove('hidden');
+            } else {
+                document.getElementById('update-password-message').classList.add('hidden');
+                alert('Contraseña actualizada correctamente');
+                form.reset();
+            }
+        } catch (error) {
+            document.getElementById('update-password-message').innerText = 'Error al actualizar la contraseña';
+            document.getElementById('update-password-message').classList.remove('hidden');
+        }
+    });
 
     window.onload = loadUserData; // Llama a la función cuando se carga la página
 </script>

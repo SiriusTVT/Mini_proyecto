@@ -288,6 +288,51 @@ app.get("/user-data", (req, res) => { // Ruta para obtener datos del usuario
     res.json(req.session.user);
 });
 
+app.post("/update-user", async (req, res) => {
+    const { name, email } = req.body;
+    const userId = req.session.user.id;
+
+    try {
+        // Verificar si el nuevo correo electrónico ya está en uso
+        const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+        if (existingUser) {
+            return res.status(400).send("El correo electrónico ya está en uso");
+        }
+
+        // Actualizar los datos del usuario
+        await User.findByIdAndUpdate(userId, { name, email });
+        req.session.user.name = name;
+        req.session.user.email = email;
+        res.send("Datos actualizados correctamente");
+    } catch (err) {
+        res.status(500).send("Error al actualizar los datos");
+    }
+});
+
+app.post("/update-password", async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.session.user.id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).send("Usuario no encontrado");
+        }
+
+        const match = await bcrypt.compare(currentPassword, user.password);
+        if (!match) {
+            return res.status(400).send("Contraseña actual incorrecta");
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        user.password = hashedPassword;
+        await user.save();
+        res.send("Contraseña actualizada correctamente");
+    } catch (err) {
+        res.status(500).send("Error al actualizar la contraseña");
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
