@@ -333,6 +333,10 @@ app.post("/update-password", async (req, res) => {
     }
 });
 
+app.get("/loginAdmin", (req, res) => {
+    res.sendFile(path.join(__dirname, "src/loginAdmin.html"));
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
