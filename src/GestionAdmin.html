@@ -6,11 +6,158 @@
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-4xl">
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+    <header class="w-full bg-white shadow-md py-4">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <nav>
+                <ul class="flex space-x-6">
+                    <li>
+                        <a class="text-gray-700 hover:text-indigo-600" href="/PaginaPrincipal.html">Inicio</a>
+                    </li>
+                    <li>
+                        <a class="text-gray-700 hover:text-indigo-600" href="/GestionProductos.html">Gestión de Productos</a>
+                    </li>
+                    <li>
+                        <a class="text-gray-700 hover:text-indigo-600" href="/logout">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-4xl mt-6">
         <h2 class="text-2xl font-semibold mb-6 text-center">Admin Dashboard</h2>
         <p class="text-center">Bienvenido al panel de administración.</p>
         <!-- Aquí puedes agregar más contenido y funcionalidades para el administrador -->
+        <div class="mt-6">
+            <h3 class="text-xl font-semibold mb-4">Gestión de Productos</h3>
+            <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" onclick="showAddProductForm()">Agregar Producto</button>
+            <div id="product-list" class="space-y-4">
+                <!-- Product list will be loaded here -->
+            </div>
+        </div>
     </div>
+
+    <!-- Add Product Form Modal -->
+    <div id="add-product-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+            <h3 class="text-xl font-semibold mb-4">Agregar Producto</h3>
+            <form id="addProductForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="name">Nombre</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="name" name="name" required type="text">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="description">Descripción</label>
+                    <textarea class="block w-full p-2 border border-gray-300 rounded" id="description" name="description" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="price">Precio</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="price" name="price" required type="number" step="0.01">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="stock">Stock</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="stock" name="stock" required type="number">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="category">Categoría</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="category" name="category" required type="text">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="imageUrl">URL de la Imagen</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="imageUrl" name="imageUrl" required type="text">
+                </div>
+                <button class="w-full bg-blue-500 text-white p-2 rounded" type="submit">Agregar Producto</button>
+                <button class="w-full bg-red-500 text-white p-2 rounded mt-2" type="button" onclick="hideAddProductForm()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function loadProducts() {
+            try {
+                const response = await fetch('/products');
+                const products = await response.json();
+                const container = document.getElementById('product-list');
+                container.innerHTML = "";
+
+                products.forEach(product => {
+                    const productElement = `
+                        <div class="bg-white p-4 rounded shadow flex justify-between items-center">
+                            <div>
+                                <h4 class="text-lg font-semibold">${product.name}</h4>
+                                <p>${product.description}</p>
+                                <p>Precio: $${product.price}</p>
+                                <p>Stock: ${product.stock}</p>
+                                <p>Categoría: ${product.category}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="showEditProductForm('${product._id}')">Editar</button>
+                                <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="deleteProduct('${product._id}')">Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += productElement;
+                });
+            } catch (error) {
+                console.error("Error al cargar los productos:", error);
+            }
+        }
+
+        function showAddProductForm() {
+            document.getElementById('add-product-modal').classList.remove('hidden');
+        }
+
+        function hideAddProductForm() {
+            document.getElementById('add-product-modal').classList.add('hidden');
+        }
+
+        document.getElementById('addProductForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/add-product', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error al agregar el producto");
+                }
+
+                alert("Producto agregado con éxito");
+                hideAddProductForm();
+                loadProducts();
+            } catch (error) {
+                console.error("Error al agregar el producto:", error);
+                alert("Error al agregar el producto");
+            }
+        });
+
+        async function deleteProduct(productId) {
+            try {
+                const response = await fetch(`/products/${productId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error al eliminar el producto");
+                }
+
+                alert("Producto eliminado con éxito");
+                loadProducts();
+            } catch (error) {
+                console.error("Error al eliminar el producto:", error);
+                alert("Error al eliminar el producto");
+            }
+        }
+
+        window.onload = loadProducts;
+    </script>
 </body>
 </html>
