@@ -60,6 +60,7 @@ const receiptSchema = new mongoose.Schema({
 const Receipt = mongoose.model('Receipt', receiptSchema);
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "src")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

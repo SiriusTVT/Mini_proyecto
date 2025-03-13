@@ -43,7 +43,7 @@
                 const addButton = document.getElementById('add-to-cart-btn');
                 addButton.disabled = product.stock <= 0;
                 addButton.className = product.stock > 0 
-                    ? 'mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'
+                    ? 'mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600'
                     : 'mt-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed';
             } catch (error) {
                 errorMessage.innerText = "Error al cargar los detalles del producto";
@@ -93,16 +93,16 @@
         <nav class="bg-white p-4 rounded-lg shadow mb-4">
             <ul class="flex justify-between items-center">
                 <li>
-                    <a href="/GestionProductos.html" class="text-blue-600 text-xl font-bold">Volver</a>
+                    <a href="/GestionProductos.html" class="text-red-600 text-xl font-bold">Volver</a>
                 </li>
                 <li>
-                    <a href="/carrito" class="text-blue-600 text-xl">
+                    <a href="/carrito" class="text-red-600 text-xl">
                         <i class="fas fa-shopping-cart"></i>
                     </a>
                 </li>
             </ul>
         </nav>
-        <h1 class="text-3xl font-bold mb-4 text-center text-blue-600">Consulta de Producto</h1>
+        <h1 class="text-3xl font-bold mb-4 text-center text-red-600">Consulta de Producto</h1>
         <div id="error-message" class="hidden text-red-600 text-center mb-4"></div>
         <div class="bg-white p-4 rounded-lg shadow">
             <img id="product-image" class="w-full h-64 object-cover mb-4 rounded" src="" alt="Producto">
@@ -117,7 +117,7 @@
                 <input type="range" id="quantity" min="1" value="1" class="w-1/16" oninput="updateQuantityValue(this.value)">
                 <span id="quantity-value" class="ml-2 text-gray-700">1</span>
             </div>
-            <button id="add-to-cart-btn" onclick="addToCart()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Agregar al carrito</button>
+            <button id="add-to-cart-btn" onclick="addToCart()" class="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Agregar al carrito</button>
         </div>
     </div>
 </body>

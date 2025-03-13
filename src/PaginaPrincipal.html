@@ -69,37 +69,41 @@
     <img alt="Mercado Libre logo" class="mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/MVCAAN9afgE02O1wMzUc_N0JaMEX4utZDiVx4Oy0tu4.jpg" width="100"/>
    </div>
    <div class="bg-gray-100 py-8">
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <script>
-            async function loadTopProducts() {
-                try {
-                    const response = await fetch('/products'); // Obtiene productos del backend
-                    const products = await response.json();
-                    const container = document.querySelector('.grid');
-        
-                    container.innerHTML = ""; // Limpia productos estáticos
-        
-                    products.slice(0, 5).forEach(product => { // Muestra los primeros 5 productos
-                        const productElement = `
-                            <div class="bg-white p-4 rounded shadow text-center">
-                                <img class="mx-auto mb-4" src="${product.imageUrl}" height="100" width="100" alt="${product.name}">
-                                <h2 class="text-lg font-bold">${product.name}</h2>
-                                <p class="text-sm">${product.description}</p>
-                                <p class="text-sm font-bold">$${product.price}</p>
-                                <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Comprar</button>
-                            </div>
-                        `;
-                        container.innerHTML += productElement;
-                    });
-                } catch (error) {
-                    console.error("Error al cargar los productos:", error);
-                }
-            }
-        
-            window.onload = loadTopProducts; // Llama a la función cuando se carga la página
-        </script>
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" id="product-container">
     </div>
    </div>
   </main>
+  <script>
+   async function loadTopProducts() {
+        try {
+            const response = await fetch('/products'); // Obtiene productos del backend
+            let products = await response.json();
+            
+            // Ordenar productos por stock ascendente y seleccionar los primeros 5
+            products.sort((a, b) => a.stock - b.stock);
+            products = products.slice(0, 5);
+            
+            const container = document.getElementById('product-container');
+            container.innerHTML = ""; // Limpia productos previos
+
+            products.forEach(product => {
+                const productElement = `
+                    <div class="bg-white p-4 rounded shadow text-center">
+                        <img class="mx-auto mb-4" src="${product.imageUrl}" height="100" width="100" alt="${product.name}">
+                        <h2 class="text-lg font-bold">${product.name}</h2>
+                        <p class="text-sm">${product.description}</p>
+                        <p class="text-sm font-bold">Stock: ${product.stock}</p>
+                        <p class="text-sm font-bold">$${product.price}</p>
+                        <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Comprar</button>
+                    </div>
+                `;
+                container.innerHTML += productElement;
+            });
+        } catch (error) {
+            console.error("Error al cargar los productos:", error);
+        }
+    }
+    window.onload = loadTopProducts;
+  </script>
  </body>
 </html>
