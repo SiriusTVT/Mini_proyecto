@@ -35,6 +35,16 @@
                 <!-- Product list will be loaded here -->
             </div>
         </div>
+
+        <div class="mt-6">
+            <h3 class="text-xl font-semibold mb-4">Consultas de Recibos</h3>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded mb-4" onclick="loadReceipts()">Ver Recibos</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded mb-4" onclick="generateReport('csv')">Exportar CSV</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded mb-4" onclick="generateReport('pdf')">Exportar PDF</button>
+            <div id="receipt-list" class="space-y-4">
+                <!-- Receipt list will be loaded here -->
+            </div>
+        </div>
     </div>
 
     <!-- Add Product Form Modal -->
@@ -234,6 +244,54 @@
             } catch (error) {
                 console.error("Error al eliminar el producto:", error);
                 alert("Error al eliminar el producto");
+            }
+        }
+
+        async function loadReceipts() {
+            try {
+                const response = await fetch('/receipts');
+                const receipts = await response.json();
+                const container = document.getElementById('receipt-list');
+                container.innerHTML = "";
+
+                receipts.forEach(receipt => {
+                    const receiptElement = `
+                        <div class="bg-white p-4 rounded shadow">
+                            <h4 class="text-lg font-semibold">Recibo ID: ${receipt._id}</h4>
+                            <p>Usuario ID: ${receipt.userId}</p>
+                            <p>Entrega: ${receipt.entrega}</p>
+                            <p>Dirección: ${receipt.direccion}</p>
+                            <p>Total: $${receipt.total.toFixed(2)}</p>
+                            <p>Fecha: ${new Date(receipt.date).toLocaleString()}</p>
+                            <h5 class="text-md font-semibold mt-2">Productos:</h5>
+                            <ul>
+                                ${receipt.products.map(product => `<li>Producto ID: ${product.productId}, Cantidad: ${product.quantity}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    container.innerHTML += receiptElement;
+                });
+            } catch (error) {
+                console.error("Error al cargar los recibos:", error);
+            }
+        }
+
+        async function generateReport(format) {
+            try {
+                const response = await fetch(`/generate-report?format=${format}`);
+                if (!response.ok) {
+                    throw new Error("Error al generar el reporte");
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `reporte.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } catch (error) {
+                console.error("Error al generar el reporte:", error);
             }
         }
 

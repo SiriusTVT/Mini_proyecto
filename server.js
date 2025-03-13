@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 const bcrypt = require('bcrypt'); // Importar bcrypt
 const saltRounds = 10; // Número de rondas de sal para bcrypt
 const session = require('express-session'); // Importar express-session
+const { Parser } = require('json2csv');
+const PDFDocument = require('pdfkit');
 
 dotenv.config();
 
@@ -42,6 +44,20 @@ const productSchema = new mongoose.Schema({
 });
 
 const Product = mongoose.model('Product', productSchema);
+
+const receiptSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    products: [{ 
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+        quantity: { type: Number, required: true }
+    }],
+    entrega: { type: String, required: true },
+    direccion: { type: String, required: true },
+    total: { type: Number, required: true },
+    date: { type: Date, default: Date.now }
+});
+
+const Receipt = mongoose.model('Receipt', receiptSchema);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -270,14 +286,27 @@ app.post('/vaciar-carrito', async (req, res) => {
 });
 
 app.post('/finalizar-compra', async (req, res) => {
+    const { entrega, direccion } = req.body;
     try {
+        let total = 0;
+        const receiptProducts = [];
         for (const item of cart) {
             const product = await Product.findById(item.productId);
             if (product) {
                 product.stock -= item.quantity;
                 await product.save();
+                total += product.price * item.quantity;
+                receiptProducts.push({ productId: product._id, quantity: item.quantity });
             }
         }
+        const receipt = new Receipt({
+            userId: req.session.user.id,
+            products: receiptProducts,
+            entrega,
+            direccion,
+            total
+        });
+        await receipt.save();
         cart = [];
         res.send('Compra finalizada con éxito');
     } catch (err) {
@@ -372,6 +401,61 @@ app.get("/admin-dashboard", (req, res) => {
         return res.redirect("/loginAdmin");
     }
     res.sendFile(path.join(__dirname, "src/GestionAdmin.html"));
+});
+
+app.get('/receipts', async (req, res) => {
+    if (!req.session.user || !req.session.user.isAdmin) {
+        return res.status(403).send("No autorizado");
+    }
+    try {
+        const receipts = await Receipt.find().populate('userId').populate('products.productId');
+        res.json(receipts);
+    } catch (err) {
+        res.status(500).send("Error al obtener los recibos");
+    }
+});
+
+app.get('/generate-report', async (req, res) => {
+    if (!req.session.user || !req.session.user.isAdmin) {
+        return res.status(403).send("No autorizado");
+    }
+    const { format } = req.query;
+    try {
+        const receipts = await Receipt.find().populate('userId').populate('products.productId');
+        if (format === 'csv') {
+            const fields = ['_id', 'userId', 'entrega', 'direccion', 'total', 'date', 'products'];
+            const parser = new Parser({ fields });
+            const csv = parser.parse(receipts);
+            res.header('Content-Type', 'text/csv');
+            res.attachment('reporte.csv');
+            return res.send(csv);
+        } else if (format === 'pdf') {
+            const doc = new PDFDocument();
+            res.header('Content-Type', 'application/pdf');
+            res.attachment('reporte.pdf');
+            doc.pipe(res);
+            doc.fontSize(20).text('Reporte de Ventas', { align: 'center' });
+            doc.moveDown();
+            receipts.forEach(receipt => {
+                doc.fontSize(12).text(`Recibo ID: ${receipt._id}`);
+                doc.text(`Usuario ID: ${receipt.userId}`);
+                doc.text(`Entrega: ${receipt.entrega}`);
+                doc.text(`Dirección: ${receipt.direccion}`);
+                doc.text(`Total: $${receipt.total.toFixed(2)}`);
+                doc.text(`Fecha: ${new Date(receipt.date).toLocaleString()}`);
+                doc.text('Productos:');
+                receipt.products.forEach(product => {
+                    doc.text(`  - Producto ID: ${product.productId}, Cantidad: ${product.quantity}`);
+                });
+                doc.moveDown();
+            });
+            doc.end();
+        } else {
+            res.status(400).send("Formato no soportado");
+        }
+    } catch (err) {
+        res.status(500).send("Error al generar el reporte");
+    }
 });
 
 app.listen(PORT, () => {

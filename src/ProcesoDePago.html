@@ -116,8 +116,14 @@
 
             document.getElementById('finalizar-compra').addEventListener('click', async function () {
                 try {
+                    const entrega = document.querySelector('input[name="entrega"]:checked').value;
+                    const direccion = entrega === 'domicilio' ? document.getElementById('direccion').value : 'Recoger en Tienda';
                     const response = await fetch('/finalizar-compra', {
-                        method: 'POST'
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ entrega, direccion })
                     });
                     if (!response.ok) {
                         throw new Error("Error al finalizar la compra");
