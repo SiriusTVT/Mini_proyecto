@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bcrypt = require('bcrypt'); // Importar bcrypt
 const saltRounds = 10; // Número de rondas de sal para bcrypt
+const session = require('express-session'); // Importar express-session
 
 dotenv.config();
 
@@ -43,6 +44,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(session({
+    secret: 'your_secret_key', // Cambia esto por una clave secreta segura
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Cambia a true si usas HTTPS
+}));
+
 app.get("/", (req, res) => {
     res.redirect("/Main.html");
 });
@@ -80,6 +88,9 @@ app.get("/ProcesoDePago.html", (req, res) => {
 });
 
 app.get("/user", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
     res.sendFile(path.join(__dirname, "src/user.html"));
 });
 
@@ -120,6 +131,7 @@ app.post("/login", async (req, res) => { // Inicio de sesión
             return res.status(400).send("Usuario no encontrado o contraseña incorrecta");
         }
 
+        req.session.user = { id: user._id, name: user.name, email: user.email }; // Guardar datos del usuario en la sesión
         res.send("Inicio de sesión exitoso");
     } catch (err) {
         res.status(500).send("Error en el inicio de sesión");
@@ -258,6 +270,22 @@ app.get('/carrito-products', async (req, res) => {
     } catch (err) {
         res.status(500).send("Error al obtener los productos del carrito");
     }
+});
+
+app.get("/logout", (req, res) => { // Cierre de sesión
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).send("Error al cerrar sesión");
+        }
+        res.redirect("/login");
+    });
+});
+
+app.get("/user-data", (req, res) => { // Ruta para obtener datos del usuario
+    if (!req.session.user) {
+        return res.status(401).send("No autorizado");
+    }
+    res.json(req.session.user);
 });
 
 app.listen(PORT, () => {

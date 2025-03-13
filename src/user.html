@@ -12,7 +12,9 @@
  <body class="bg-gray-100">
   <header class="bg-yellow-400 p-4 flex items-center justify-between">
    <div class="flex items-center">
-    <img alt="Mercado Libre logo" class="h-8" height="50" src="https://storage.googleapis.com/a1aa/image/MVCAAN9afgE02O1wMzUc_N0JaMEX4utZDiVx4Oy0tu4.jpg" width="50"/>
+    <a href="/PaginaPrincipal.html">
+     <img alt="Mercado Libre logo" class="h-8" height="50" src="https://storage.googleapis.com/a1aa/image/MVCAAN9afgE02O1wMzUc_N0JaMEX4utZDiVx4Oy0tu4.jpg" width="50"/>
+    </a>
     <div class="ml-4">
      <p class="text-sm">
       Enviar a Juan
@@ -112,11 +114,11 @@
      <div class="flex items-center mb-4">
       <img alt="User avatar" class="h-12 w-12 rounded-full" height="50" src="https://storage.googleapis.com/a1aa/image/JWtIfhlKRM-OkP4V62ufjvv9suro06qYJmK4vRgo8bI.jpg" width="50"/>
       <div class="ml-4">
-       <h2 class="text-xl font-semibold">
-        Juan David Troncoso
+       <h2 id="user-name" class="text-xl font-semibold">
+        <!-- Nombre del usuario -->
        </h2>
-       <p class="text-gray-600">
-        juandavid.troncoso@gmail.com
+       <p id="user-email" class="text-gray-600">
+        <!-- Email del usuario -->
        </p>
        <a class="text-blue-500" href="#">
         Estás en nivel 1 - Mercado Puntos
@@ -246,6 +248,24 @@
      </p>
     </div>
    </section>
+   <script>
+    async function loadUserData() {
+        try {
+            const response = await fetch('/user-data');
+            if (!response.ok) {
+                throw new Error("No autorizado");
+            }
+            const user = await response.json();
+            document.getElementById('user-name').innerText = user.name;
+            document.getElementById('user-email').innerText = user.email;
+        } catch (error) {
+            console.error("Error al cargar los datos del usuario:", error);
+            window.location.href = '/login';
+        }
+    }
+
+    window.onload = loadUserData; // Llama a la función cuando se carga la página
+</script>
   </main>
  </body>
 </html>
