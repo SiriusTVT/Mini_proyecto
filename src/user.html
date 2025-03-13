@@ -1,12 +1,279 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Page</title>
-</head>
-<body>
-    <h1>Welcome to the User Page</h1>
-    <!-- ...existing code... -->
-</body>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Account Page
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ <body class="bg-gray-100">
+  <header class="bg-yellow-400 p-4 flex items-center justify-between">
+   <div class="flex items-center">
+    <img alt="Mercado Libre logo" class="h-8" height="50" src="https://storage.googleapis.com/a1aa/image/_Pv-vVAEfiF_WttlQcIEj0Fnb7gSO_L8Z2iD-Sur6z0.jpg" width="50"/>
+    <div class="ml-4">
+     <p class="text-sm">
+      Enviar a Juan
+     </p>
+    </div>
+   </div>
+   <div class="flex-1 mx-4">
+    <input class="w-full p-2 rounded border border-gray-300" placeholder="Buscar productos, marcas y más..." type="text"/>
+   </div>
+   <div class="flex items-center space-x-4">
+    <a class="text-sm" href="#">
+     Categorías
+    </a>
+    <a class="text-sm" href="#">
+     Ofertas
+    </a>
+    <a class="text-sm" href="#">
+     Supermercado
+    </a>
+    <a class="text-sm" href="#">
+     Moda
+    </a>
+    <a class="text-sm" href="#">
+     Mercado Play
+    </a>
+    <a class="text-sm" href="#">
+     Vender
+    </a>
+    <a class="text-sm" href="#">
+     Ayuda
+    </a>
+    <div class="relative">
+     <img alt="User avatar" class="h-8 w-8 rounded-full" height="30" src="https://storage.googleapis.com/a1aa/image/JWtIfhlKRM-OkP4V62ufjvv9suro06qYJmK4vRgo8bI.jpg" width="30"/>
+     <span class="absolute bottom-0 right-0 bg-green-500 h-2 w-2 rounded-full">
+     </span>
+    </div>
+    <a class="text-sm" href="#">
+     Juan David
+    </a>
+    <a class="text-sm" href="#">
+     Mis compras
+    </a>
+    <a class="text-sm" href="#">
+     Favoritos
+    </a>
+    <i class="fas fa-bell text-lg">
+    </i>
+    <i class="fas fa-shopping-cart text-lg">
+    </i>
+   </div>
+  </header>
+  <main class="flex">
+   <aside class="w-1/4 bg-white p-4">
+    <nav>
+     <ul>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-shopping-cart mr-2">
+        </i>
+        Compras
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-store mr-2">
+        </i>
+        Ventas
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-bullhorn mr-2">
+        </i>
+        Marketing
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-newspaper mr-2">
+        </i>
+        Suscripciones
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-leaf mr-2">
+        </i>
+        Bio libre
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-file-invoice mr-2">
+        </i>
+        Facturación
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-user mr-2">
+        </i>
+        Mi perfil
+       </a>
+      </li>
+      <li class="mb-4">
+       <a class="flex items-center text-gray-700" href="#">
+        <i class="fas fa-cog mr-2">
+        </i>
+        Configuración
+       </a>
+      </li>
+     </ul>
+    </nav>
+   </aside>
+   <section class="flex-1 p-8">
+    <div class="bg-white p-6 rounded shadow">
+     <div class="flex items-center mb-4">
+      <img alt="User avatar" class="h-12 w-12 rounded-full" height="50" src="https://storage.googleapis.com/a1aa/image/JWtIfhlKRM-OkP4V62ufjvv9suro06qYJmK4vRgo8bI.jpg" width="50"/>
+      <div class="ml-4">
+       <h2 class="text-xl font-semibold">
+        Juan David Troncoso
+       </h2>
+       <p class="text-gray-600">
+        juandavid.troncoso@gmail.com
+       </p>
+       <a class="text-blue-500" href="#">
+        Estás en nivel 1 - Mercado Puntos
+       </a>
+      </div>
+     </div>
+     <div class="bg-gray-100 p-4 rounded mb-4 flex items-center justify-between">
+      <p class="text-gray-600">
+       "Mi perfil" en Mercado Libre es el mismo que en Mercado Pago.
+      </p>
+      <button class="text-gray-600">
+       X
+      </button>
+     </div>
+     <ul>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-user text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Información personal
+         </h3>
+         <p class="text-gray-600">
+          Información de tu documento de identidad y ocupación.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-id-card text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Datos de tu cuenta
+         </h3>
+         <p class="text-gray-600">
+          Datos que representan a la cuenta en Mercado Libre y Mercado Pago.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-shield-alt text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Seguridad
+         </h3>
+         <p class="text-gray-600">
+          Tienes configurada la seguridad de tu cuenta.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-credit-card text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Tarjetas
+         </h3>
+         <p class="text-gray-600">
+          Tarjetas guardadas en tu cuenta.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-map-marker-alt text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Direcciones
+         </h3>
+         <p class="text-gray-600">
+          Direcciones guardadas en tu cuenta.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-user-shield text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Privacidad
+         </h3>
+         <p class="text-gray-600">
+          Preferencias y control sobre el uso de tus datos.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+      <li class="flex items-center justify-between p-4 border-b">
+       <div class="flex items-center">
+        <i class="fas fa-envelope text-blue-500 mr-2">
+        </i>
+        <div>
+         <h3 class="font-semibold">
+          Comunicaciones
+         </h3>
+         <p class="text-gray-600">
+          Elige qué tipo de información quieres recibir.
+         </p>
+        </div>
+       </div>
+       <i class="fas fa-chevron-right text-gray-600">
+       </i>
+      </li>
+     </ul>
+     <p class="text-gray-600 mt-4">
+      Puedes
+      <a class="text-blue-500" href="#">
+       cancelar tu cuenta
+      </a>
+      siempre que lo desees.
+     </p>
+    </div>
+   </section>
+  </main>
+ </body>
 </html>
