@@ -19,11 +19,14 @@ mongoose
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.log("MongoDB connection error:", err));
 
+const adminDomain = "@admin.com"; // Dominio para usuarios administradores
+
 // Definición del esquema y modelo de usuario
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    isAdmin: { type: Boolean, default: false },
 });
 
 const User = mongoose.model("User", userSchema);
@@ -131,7 +134,7 @@ app.post("/login", async (req, res) => { // Inicio de sesión
             return res.status(400).send("Usuario no encontrado o contraseña incorrecta");
         }
 
-        req.session.user = { id: user._id, name: user.name, email: user.email }; // Guardar datos del usuario en la sesión
+        req.session.user = { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin }; // Guardar datos del usuario en la sesión
         res.send("Inicio de sesión exitoso");
     } catch (err) {
         res.status(500).send("Error en el inicio de sesión");
@@ -147,11 +150,14 @@ app.post("/register", async (req, res) => { // Registro de usuario
             return res.status(400).send("El usuario ya existe");
         }
 
+        // Verificar si el dominio del correo es de administrador
+        const isAdmin = email.endsWith(adminDomain);
+
         // Encriptar la contraseña
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Crear un nuevo usuario
-        const newUser = new User({ name, email, password: hashedPassword });
+        const newUser = new User({ name, email, password: hashedPassword, isAdmin });
         await newUser.save();
         res.send("Registro exitoso");
     } catch (err) {

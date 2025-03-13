@@ -11,8 +11,8 @@
         <h2 class="text-2xl font-semibold mb-6 text-center">Admin Login</h2>
         <form id="adminLoginForm">
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="username">Username</label>
-                <input class="block w-full p-2 border border-gray-300 rounded" id="username" name="username" required type="text">
+                <label class="block text-sm font-medium text-gray-700" for="email">Email</label>
+                <input class="block w-full p-2 border border-gray-300 rounded" id="email" name="email" required type="email">
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700" for="password">Password</label>
@@ -30,7 +30,7 @@
             const data = Object.fromEntries(formData.entries());
 
             try {
-                const response = await fetch('/admin-login', {
+                const response = await fetch('/login', { // Usar el mismo endpoint de login
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -44,7 +44,13 @@
                     document.getElementById('login-error-message').classList.remove('hidden');
                 } else {
                     document.getElementById('login-error-message').classList.add('hidden');
-                    window.location.href = '/admin-dashboard';
+                    const user = await response.json();
+                    if (user.isAdmin) {
+                        window.location.href = '/admin-dashboard';
+                    } else {
+                        document.getElementById('login-error-message').innerText = 'No tienes permisos de administrador';
+                        document.getElementById('login-error-message').classList.remove('hidden');
+                    }
                 }
             } catch (error) {
                 document.getElementById('login-error-message').innerText = 'Error during login';
