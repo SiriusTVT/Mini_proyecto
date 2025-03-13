@@ -172,6 +172,30 @@ app.post('/add-product', async (req, res) => {
     res.send('Producto agregado con éxito');
 });
 
+app.put('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, description, price, stock, category, imageUrl } = req.body;
+
+    try {
+        const product = await Product.findByIdAndUpdate(id, {
+            name,
+            description,
+            price,
+            stock,
+            category,
+            imageUrl
+        }, { new: true });
+
+        if (!product) {
+            return res.status(404).send("Producto no encontrado");
+        }
+
+        res.send("Producto actualizado con éxito");
+    } catch (error) {
+        res.status(500).send("Error al actualizar el producto");
+    }
+});
+
 app.delete('/products/:id', async (req, res) => {
     try {
         const result = await Product.findByIdAndDelete(req.params.id);

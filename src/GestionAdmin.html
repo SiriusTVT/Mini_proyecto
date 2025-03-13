@@ -72,6 +72,42 @@
         </div>
     </div>
 
+    <!-- Edit Product Form Modal -->
+    <div id="edit-product-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+            <h3 class="text-xl font-semibold mb-4">Editar Producto</h3>
+            <form id="editProductForm">
+                <input type="hidden" id="edit-product-id" name="id">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="edit-name">Nombre</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="edit-name" name="name" required type="text">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="edit-description">Descripción</label>
+                    <textarea class="block w-full p-2 border border-gray-300 rounded" id="edit-description" name="description" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="edit-price">Precio</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="edit-price" name="price" required type="number" step="0.01">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="edit-stock">Stock</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="edit-stock" name="stock" required type="number">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="edit-category">Categoría</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="edit-category" name="category" required type="text">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="edit-imageUrl">URL de la Imagen</label>
+                    <input class="block w-full p-2 border border-gray-300 rounded" id="edit-imageUrl" name="imageUrl" required type="text">
+                </div>
+                <button class="w-full bg-blue-500 text-white p-2 rounded" type="submit">Actualizar Producto</button>
+                <button class="w-full bg-red-500 text-white p-2 rounded mt-2" type="button" onclick="hideEditProductForm()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         async function loadProducts() {
             try {
@@ -91,7 +127,7 @@
                                 <p>Categoría: ${product.category}</p>
                             </div>
                             <div class="flex space-x-2">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="showEditProductForm('${product._id}')">Editar</button>
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="showEditProductForm('${product._id}', '${product.name}', '${product.description}', ${product.price}, ${product.stock}, '${product.category}', '${product.imageUrl}')">Editar</button>
                                 <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="deleteProduct('${product._id}')">Eliminar</button>
                             </div>
                         </div>
@@ -109,6 +145,21 @@
 
         function hideAddProductForm() {
             document.getElementById('add-product-modal').classList.add('hidden');
+        }
+
+        function showEditProductForm(id, name, description, price, stock, category, imageUrl) {
+            document.getElementById('edit-product-id').value = id;
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-description').value = description;
+            document.getElementById('edit-price').value = price;
+            document.getElementById('edit-stock').value = stock;
+            document.getElementById('edit-category').value = category;
+            document.getElementById('edit-imageUrl').value = imageUrl;
+            document.getElementById('edit-product-modal').classList.remove('hidden');
+        }
+
+        function hideEditProductForm() {
+            document.getElementById('edit-product-modal').classList.add('hidden');
         }
 
         document.getElementById('addProductForm').addEventListener('submit', async function (event) {
@@ -136,6 +187,35 @@
             } catch (error) {
                 console.error("Error al agregar el producto:", error);
                 alert("Error al agregar el producto");
+            }
+        });
+
+        document.getElementById('editProductForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(`/products/${data.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    const message = await response.text();
+                    throw new Error(message);
+                }
+
+                alert("Producto actualizado con éxito");
+                hideEditProductForm();
+                loadProducts();
+            } catch (error) {
+                console.error("Error al actualizar el producto:", error);
+                alert("Error al actualizar el producto");
             }
         });
 
