@@ -1,0 +1,41 @@
+/* Aplicando la paleta de colores rojo, naranja y amarillo */
+body {
+    background-color: #FFD700; /* Amarillo vibrante */
+    font-family: 'Roboto', sans-serif;
+}
+
+header, .bg-white {
+    background-color: #FF4500; /* Naranja fuerte */
+}
+
+h1, h2, h3, .text-gray-800 {
+    color: #8B0000; /* Rojo oscuro */
+}
+
+.bg-gray-100 {
+    background-color: #FFA500; /* Naranja */
+}
+
+.text-gray-700, .text-gray-600 {
+    color: #8B0000; /* Rojo oscuro para textos */
+}
+
+.hover\:bg-blue-600:hover {
+    background-color: #FF6347; /* Rojo tomate */
+}
+
+.hover\:text-indigo-600:hover, .text-blue-600 {
+    color: #FFD700; /* Amarillo */
+}
+
+.border-gray-300 {
+    border-color: #FF4500; /* Borde naranja fuerte */
+}
+
+.bg-blue-500 {
+    background-color: #FF4500 !important; /* Botones en naranja fuerte */
+}
+
+.bg-blue-600:hover {
+    background-color: #FF6347 !important; /* Botón en rojo tomate al pasar el cursor */
+}
