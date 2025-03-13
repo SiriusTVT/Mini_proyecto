@@ -135,7 +135,7 @@ app.post("/login", async (req, res) => { // Inicio de sesión
         }
 
         req.session.user = { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin }; // Guardar datos del usuario en la sesión
-        res.send("Inicio de sesión exitoso");
+        res.json(req.session.user); // Enviar los datos del usuario como respuesta
     } catch (err) {
         res.status(500).send("Error en el inicio de sesión");
     }
@@ -341,6 +341,13 @@ app.post("/update-password", async (req, res) => {
 
 app.get("/loginAdmin", (req, res) => {
     res.sendFile(path.join(__dirname, "src/loginAdmin.html"));
+});
+
+app.get("/admin-dashboard", (req, res) => {
+    if (!req.session.user || !req.session.user.isAdmin) {
+        return res.redirect("/loginAdmin");
+    }
+    res.sendFile(path.join(__dirname, "src/GestionAdmin.html"));
 });
 
 app.listen(PORT, () => {
